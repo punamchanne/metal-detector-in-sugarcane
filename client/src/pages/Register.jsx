@@ -33,6 +33,11 @@ const Register = () => {
                 toast.success('Account created! Please login with your credentials.');
                 navigate('/login');
             } catch (error) {
+                console.error("Registration Error Details:", error);
+                if (error.response) {
+                    console.error("Server Response:", error.response.data);
+                    console.error("Status Code:", error.response.status);
+                }
                 const message = error.response?.data?.message || 'Registration failed';
                 toast.error(message);
             }
