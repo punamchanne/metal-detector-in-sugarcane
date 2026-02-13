@@ -30,8 +30,8 @@ const Register = () => {
         } else {
             try {
                 await authService.register({ name, email, password });
-                toast.success('Account created successfully!');
-                navigate('/dashboard');
+                toast.success('Account created! Please login with your credentials.');
+                navigate('/login');
             } catch (error) {
                 const message = error.response?.data?.message || 'Registration failed';
                 toast.error(message);

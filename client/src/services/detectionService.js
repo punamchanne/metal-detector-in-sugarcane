@@ -6,8 +6,10 @@ const API_URL = 'http://localhost:5000/api/detections/';
 const getAuthDetails = () => {
     const user = JSON.parse(localStorage.getItem('user'));
     if (user && user.token) {
+        console.log('Sending Token:', user.token.substring(0, 10) + '...');
         return { headers: { Authorization: `Bearer ${user.token}` } };
     }
+    console.warn('No token found in localStorage');
     return {};
 };
 

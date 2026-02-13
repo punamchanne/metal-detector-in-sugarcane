@@ -19,12 +19,13 @@ const protect = asyncHandler(async (req, res, next) => {
 
             // Get user from the token
             req.user = await User.findById(decoded.id).select('-password');
+            console.log('User verified:', req.user ? req.user.email : 'User not found in DB');
 
             next();
         } catch (error) {
-            console.log(error);
+            console.error('Auth Middleware Error:', error.message);
             res.status(401);
-            throw new Error('Not authorized');
+            throw new Error('Not authorized: ' + error.message);
         }
     }
 

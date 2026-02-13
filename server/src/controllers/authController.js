@@ -14,22 +14,39 @@ const registerUser = asyncHandler(async (req, res) => {
         throw new Error('Please add all fields');
     }
 
+    // Force lowercase email
+    const emailLower = email.toLowerCase();
+
     // Check if user exists
-    const userExists = await User.findOne({ email });
+    const userExists = await User.findOne({ email: emailLower });
 
     if (userExists) {
         res.status(400);
         throw new Error('User already exists');
     }
 
-    // Hash password (handled in model pre-save)
-    const user = await User.create({
-        name,
-        email,
-        password
-    });
+    // Hash password manually
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    console.log(`Creating user: ${emailLower}`);
+    let user;
+    try {
+        // Create user
+        user = await User.create({
+            name,
+            email: emailLower,
+            password: hashedPassword
+        });
+        console.log('User.create finished. Result:', user);
+    } catch (dbError) {
+        console.error('DATABASE ERROR during User.create:', dbError);
+        res.status(500);
+        throw new Error('Database write failed: ' + dbError.message);
+    }
 
     if (user) {
+        console.log(`User created successfully with ID: ${user._id}`);
         res.status(201).json({
             _id: user.id,
             name: user.name,
@@ -37,6 +54,7 @@ const registerUser = asyncHandler(async (req, res) => {
             token: generateToken(user._id)
         });
     } else {
+        console.error('User.create returned null/undefined');
         res.status(400);
         throw new Error('Invalid user data');
     }
@@ -47,11 +65,12 @@ const registerUser = asyncHandler(async (req, res) => {
 // @access  Public
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
+    const emailLower = email.toLowerCase();
 
     // Check for user email
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: emailLower });
 
-    console.log(`Login attempt for: ${email}`);
+    console.log(`Login attempt for: ${emailLower}`);
     if (user) {
         console.log('User found.');
     } else {
