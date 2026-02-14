@@ -2,7 +2,9 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
     try {
-        const conn = await mongoose.connect(process.env.MONGO_URI);
+        // Use environment variable or fallback to local MongoDB (Compass)
+        const dbURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/metal_detector_db';
+        const conn = await mongoose.connect(dbURI);
         console.log(`MongoDB Connected: ${conn.connection.host}`);
 
         // Critical Fix: Drop the old 'username' index that is causing "duplicate key: null" errors
