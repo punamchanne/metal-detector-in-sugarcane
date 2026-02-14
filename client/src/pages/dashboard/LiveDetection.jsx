@@ -33,7 +33,7 @@ const LiveDetection = () => {
 
             {/* Live Feed Area */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <div className="aspect-video bg-gray-900 rounded-lg flex items-center justify-center relative overflow-hidden">
+                <div className="aspect-video bg-gray-900 rounded-lg flex items-center justify-center relative overflow-hidden max-w-3xl mx-auto">
                     {/* Video Element for Live Feed */}
                     <video
                         ref={videoRef}
