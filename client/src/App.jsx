@@ -9,6 +9,8 @@ import DetectionHistory from './pages/dashboard/History';
 import Alerts from './pages/dashboard/Alerts';
 import Reports from './pages/dashboard/Reports';
 import Settings from './pages/dashboard/Settings';
+import LiveDetection from './pages/dashboard/LiveDetection';
+import AIInspection from './pages/dashboard/AIInspection';
 
 function App() {
     return (
@@ -27,6 +29,8 @@ function App() {
                             <Route path="history" element={<DetectionHistory />} />
                             <Route path="alerts" element={<Alerts />} />
                             <Route path="reports" element={<Reports />} />
+                            <Route path="live" element={<LiveDetection />} />
+                            <Route path="inspection" element={<AIInspection />} />
                             <Route path="settings" element={<Settings />} />
                             <Route path="*" element={<Navigate to="/dashboard" replace />} />
                         </Routes>

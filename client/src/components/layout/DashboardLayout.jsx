@@ -9,7 +9,9 @@ import {
     LogOut,
     Menu,
     Leaf,
-    User
+    User,
+    Camera,
+    Scan
 } from 'lucide-react';
 import authService from '../../services/authService';
 
@@ -17,8 +19,8 @@ const SidebarLink = ({ to, icon: Icon, label, active }) => (
     <Link
         to={to}
         className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors mb-1 ${active
-                ? 'bg-green-100 text-green-700'
-                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+            ? 'bg-green-100 text-green-700'
+            : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
             }`}
     >
         <Icon className="h-5 w-5" />
@@ -90,6 +92,18 @@ const DashboardLayout = ({ children }) => {
                                 icon={FileText}
                                 label="Reports"
                                 active={isActive('/dashboard/reports')}
+                            />
+                            <SidebarLink
+                                to="/dashboard/live"
+                                icon={Camera}
+                                label="Live Detection"
+                                active={isActive('/dashboard/live')}
+                            />
+                            <SidebarLink
+                                to="/dashboard/inspection"
+                                icon={Scan}
+                                label="AI Inspection"
+                                active={isActive('/dashboard/inspection')}
                             />
                             <SidebarLink
                                 to="/dashboard/settings"
