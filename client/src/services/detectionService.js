@@ -33,7 +33,7 @@ const getHistory = async () => {
 };
 
 // Get Analytics Overview
-const getAnalytics = async () => {
+const getStats = async () => {
     const response = await axios.get(API_URL + 'analytics/overview', getConfig());
     return response.data;
 };
@@ -41,7 +41,7 @@ const getAnalytics = async () => {
 const detectionService = {
     detectImage,
     getHistory,
-    getAnalytics,
+    getStats,
 };
 
 export default detectionService;
