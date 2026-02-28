@@ -88,6 +88,15 @@ A comprehensive IoT-enabled web application for real-time metal detection in sug
     ```
     Client will run on `http://localhost:5173`.
 
+3.  **Start AI Microservice (Python FastAPI)**:
+    *(Ensure you have Python installed and your AI script ready)*
+    ```bash
+    cd <path-to-your-python-folder>
+    pip install fastapi uvicorn
+    uvicorn main:app --reload
+    ```
+    The FastAPI service should run on `http://127.0.0.1:8000`.
+
 ## 🌐 Deployment
 
 ### Frontend (Vercel)
