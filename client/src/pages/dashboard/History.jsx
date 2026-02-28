@@ -9,7 +9,7 @@ const DetectionHistory = () => {
     useEffect(() => {
         const fetchDetections = async () => {
             try {
-                const data = await detectionService.getDetections();
+                const data = await detectionService.getHistory();
                 setDetections(data);
             } catch (error) {
                 console.error(error);
@@ -21,14 +21,8 @@ const DetectionHistory = () => {
         fetchDetections();
     }, []);
 
-    const getStatusColor = (status) => {
-        switch (status) {
-            case 'Detected': return 'bg-red-100 text-red-800';
-            case 'Resolved': return 'bg-green-100 text-green-800';
-            case 'Start': return 'bg-blue-100 text-blue-800';
-            case 'Stop': return 'bg-gray-100 text-gray-800';
-            default: return 'bg-gray-100 text-gray-800';
-        }
+    const getStatusColor = (isAlert) => {
+        return isAlert ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800';
     };
 
     return (
@@ -56,13 +50,13 @@ const DetectionHistory = () => {
                                     Date & Time
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Metal Type
+                                    Operation Mode
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Location
+                                    AI Result
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Severity
+                                    Confidence
                                 </th>
                                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Status
@@ -88,18 +82,18 @@ const DetectionHistory = () => {
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                             {new Date(detection.createdAt).toLocaleString()}
                                         </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {detection.metalType}
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 uppercase">
+                                            {detection.mode.replace('_', ' ')}
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">
+                                            {detection.result}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {detection.location}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {detection.severity}
+                                            {(detection.confidence * 100).toFixed(1)}%
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(detection.status)}`}>
-                                                {detection.status}
+                                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusColor(detection.alertTriggered)}`}>
+                                                {detection.alertTriggered ? 'ALERT' : 'SAFE'}
                                             </span>
                                         </td>
                                     </tr>
