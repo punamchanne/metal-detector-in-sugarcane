@@ -2,34 +2,46 @@ import axios from 'axios';
 
 const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/detections/';
 
-// Get user from local storage to send token
-const getAuthDetails = () => {
+// Get user token
+const getConfig = () => {
     const user = JSON.parse(localStorage.getItem('user'));
-    if (user && user.token) {
-        console.log('Sending Token:', user.token.substring(0, 10) + '...');
-        return { headers: { Authorization: `Bearer ${user.token}` } };
-    }
-    console.warn('No token found in localStorage');
-    return {};
+    return {
+        headers: {
+            Authorization: `Bearer ${user?.token}`,
+        },
+    };
 };
 
-// Get stats
-const getStats = async () => {
-    const config = getAuthDetails();
-    const response = await axios.get(API_URL + 'stats', config);
+// Run AI Detection (Upload Image)
+const detectImage = async (formData) => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const config = {
+        headers: {
+            Authorization: `Bearer ${user?.token}`,
+            'Content-Type': 'multipart/form-data'
+        },
+    };
+
+    const response = await axios.post(API_URL + 'detect', formData, config);
     return response.data;
 };
 
-// Get all detections
-const getDetections = async () => {
-    const config = getAuthDetails();
-    const response = await axios.get(API_URL, config);
+// Get Detection History
+const getHistory = async () => {
+    const response = await axios.get(API_URL + 'history', getConfig());
+    return response.data;
+};
+
+// Get Analytics Overview
+const getAnalytics = async () => {
+    const response = await axios.get(API_URL + 'analytics/overview', getConfig());
     return response.data;
 };
 
 const detectionService = {
-    getStats,
-    getDetections
+    detectImage,
+    getHistory,
+    getAnalytics,
 };
 
 export default detectionService;
