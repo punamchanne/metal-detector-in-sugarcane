@@ -2,6 +2,8 @@ from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 import os
 
+from yolo_inference import detect_metal
+
 app = FastAPI(title="CaneGuard AI Microservice")
 
 # Allow Node.js Backend to communicate with Python Microservice
@@ -20,21 +22,22 @@ def home():
 @app.post("/predict-metal")
 async def predict_metal(file: UploadFile = File(...)):
     """
-    Mock Route for YOLOv8 Metal Detection
-    Replace this logic later with actual torch/ultralytics model inference
+    Real Route for YOLOv8 Metal Detection
     """
     try:
         # Read file into memory
         contents = await file.read()
         
-        # Example: 
-        # model = YOLO('yolov8n.pt')
-        # results = model(contents)
+        # Call the YOLOv8 model
+        detection_result = detect_metal(contents)
         
-        # Mock Response
+        # If the result has an error, propagate it
+        if "error" in detection_result:
+             return {"error": detection_result["error"]}
+        
         return {
-            "result": "Metal Detected",
-            "confidence": 0.98,
+            "result": detection_result["result"],
+            "confidence": detection_result["confidence"],
             "filename": file.filename
         }
     except Exception as e:
