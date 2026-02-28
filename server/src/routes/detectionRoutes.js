@@ -1,10 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const { getDetections, createDetection, updateDetection, getStats } = require('../controllers/detectionController');
+const multer = require('multer');
+
+// Configure multer memory storage
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+const {
+    detectImage,
+    getHistory,
+    getAnalyticsOverview
+} = require('../controllers/detectionController');
 const { protect } = require('../middleware/authMiddleware');
 
-router.route('/').get(protect, getDetections).post(createDetection);
-router.get('/stats', protect, getStats);
-router.route('/:id').put(protect, updateDetection);
+router.post('/detect', protect, upload.single('image'), detectImage);
+router.get('/history', protect, getHistory);
+router.get('/analytics/overview', protect, getAnalyticsOverview);
 
 module.exports = router;

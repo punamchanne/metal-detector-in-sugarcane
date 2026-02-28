@@ -1,78 +1,113 @@
 const asyncHandler = require('express-async-handler');
+const axios = require('axios');
+const FormData = require('form-data');
 const Detection = require('../models/detectionModel');
+const Alert = require('../models/alertModel');
 
-// @desc    Get all detections
-// @route   GET /api/detections
+// @desc    Upload image and detect
+// @route   POST /api/detect
 // @access  Private
-const getDetections = asyncHandler(async (req, res) => {
-    const detections = await Detection.find().sort({ createdAt: -1 });
+const detectImage = asyncHandler(async (req, res) => {
+    if (!req.file) {
+        res.status(400);
+        throw new Error('Please upload an image');
+    }
+
+    const { mode } = req.body;
+    if (!mode || !['metal_detection', 'leaf_disease'].includes(mode)) {
+        res.status(400);
+        throw new Error('Invalid mode selected');
+    }
+
+    try {
+        // Prepare form data for Python FastAPI
+        const formData = new FormData();
+        formData.append('file', req.file.buffer, {
+            filename: req.file.originalname,
+            contentType: req.file.mimetype
+        });
+
+        // Determine AI Endpoint
+        const fastApiUrl = process.env.FASTAPI_URL || 'http://127.0.0.1:8000';
+        const endpoint = mode === 'metal_detection' ? '/predict-metal' : '/predict-disease';
+
+        // Setup headers correctly for memory buffer
+        const headers = { ...formData.getHeaders() };
+
+        // Call FastAPI Microservice directly
+        const response = await axios.post(`${fastApiUrl}${endpoint}`, formData, {
+            headers
+        });
+
+        const aiData = response.data;
+        // Expected from FastAPI: { result: "string", confidence: float }
+
+        let alertTriggered = false;
+
+        // Check conditions for Alert
+        if (aiData.result === 'Metal Detected' || aiData.result === 'Red Rot') {
+            alertTriggered = true;
+            await Alert.create({
+                message: `ALERT: ${aiData.result} detected in latest scan.`,
+                status: 'Unread'
+            });
+        }
+
+        // Save Detection to DB
+        const detection = await Detection.create({
+            user: req.user._id,
+            mode: mode,
+            result: aiData.result,
+            confidence: aiData.confidence,
+            imageUrl: '', // For now empty, or implement Cloudinary/S3 in the future
+            alertTriggered
+        });
+
+        res.status(201).json({
+            success: true,
+            result: detection.result,
+            confidence: detection.confidence,
+            alertTriggered: detection.alertTriggered
+        });
+
+    } catch (error) {
+        console.error('AI Service Error:', error.message);
+        res.status(500);
+        throw new Error('AI Detection Service failed: ' + (error.response?.data?.detail || error.message));
+    }
+});
+
+// @desc    Get detection history
+// @route   GET /api/detections/history
+// @access  Private
+const getHistory = asyncHandler(async (req, res) => {
+    // Return all detections matching current user or all if admin
+    const detections = await Detection.find({ user: req.user._id })
+        .sort({ createdAt: -1 })
+        .limit(50); // limit to recent 50 for performance
+
     res.json(detections);
 });
 
-// @desc    Create new detection (Simulated or from IoT)
-// @route   POST /api/detections
-// @access  Public (or protected depending on IoT setup)
-const createDetection = asyncHandler(async (req, res) => {
-    const { metalType, severity, sensorId, location, status } = req.body;
-
-    if (!sensorId) {
-        res.status(400);
-        throw new Error('Sensor ID is required');
-    }
-
-    const detection = await Detection.create({
-        metalType,
-        severity,
-        sensorId,
-        location,
-        status
-    });
-
-    res.status(201).json(detection);
-});
-
-// @desc    Update detection status
-// @route   PUT /api/detections/:id
+// @desc    Get analytics overview
+// @route   GET /api/analytics/overview
 // @access  Private
-const updateDetection = asyncHandler(async (req, res) => {
-    const detection = await Detection.findById(req.params.id);
-
-    if (!detection) {
-        res.status(404);
-        throw new Error('Detection not found');
-    }
-
-    const updatedDetection = await Detection.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        { new: true }
-    );
-
-    res.json(updatedDetection);
-});
-
-// @desc    Get detection stats
-// @route   GET /api/detections/stats
-// @access  Private
-const getStats = asyncHandler(async (req, res) => {
-    const total = await Detection.countDocuments();
-    const ferrous = await Detection.countDocuments({ metalType: 'Ferrous' });
-    const nonFerrous = await Detection.countDocuments({ metalType: 'Non-Ferrous' });
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayCount = await Detection.countDocuments({ createdAt: { $gte: today } });
+const getAnalyticsOverview = asyncHandler(async (req, res) => {
+    const totalDetections = await Detection.countDocuments({ user: req.user._id });
+    const metalDetections = await Detection.countDocuments({ user: req.user._id, mode: 'metal_detection' });
+    const diseaseDetections = await Detection.countDocuments({ user: req.user._id, mode: 'leaf_disease' });
+    const alertsTriggered = await Detection.countDocuments({ user: req.user._id, alertTriggered: true });
 
     res.json({
-        total,
-        ferrous,
-        nonFerrous,
-        today: todayCount
+        total: totalDetections,
+        metal: metalDetections,
+        disease: diseaseDetections,
+        alerts: alertsTriggered
     });
 });
 
 module.exports = {
-    getDetections,
-    createDetection,
-    updateDetection,
-    getStats
+    detectImage,
+    getHistory,
+    getAnalyticsOverview
 };

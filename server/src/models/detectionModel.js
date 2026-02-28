@@ -1,32 +1,31 @@
 const mongoose = require('mongoose');
 
 const detectionSchema = mongoose.Schema({
-    timestamp: {
-        type: Date,
-        default: Date.now
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
     },
-    metalType: {
+    mode: {
         type: String,
-        enum: ['Ferrous', 'Non-Ferrous', 'Unknown'],
-        default: 'Unknown'
+        required: true,
+        enum: ['metal_detection', 'leaf_disease']
     },
-    severity: {
-        type: String,
-        enum: ['Low', 'Medium', 'High'],
-        default: 'Medium'
-    },
-    status: {
-        type: String,
-        enum: ['Detected', 'Start', 'Stop', 'Resolved'],
-        default: 'Detected'
-    },
-    sensorId: {
+    result: {
         type: String,
         required: true
     },
-    location: {
-        type: String, // e.g., "Conveyor Belt 1"
-        default: "Main Line"
+    confidence: {
+        type: Number,
+        required: true
+    },
+    imageUrl: {
+        type: String,
+        default: ''
+    },
+    alertTriggered: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true

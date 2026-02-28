@@ -23,6 +23,7 @@ connectDB();
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/detections', require('./routes/detectionRoutes'));
+app.use('/api/alerts', require('./routes/alertRoutes'));
 
 app.get('/', (req, res) => {
     res.send('Metal Detector API is running...');
