@@ -98,9 +98,8 @@ const getMe = asyncHandler(async (req, res) => {
     res.json(req.user);
 });
 
-// Generate JWT
 const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, {
+    return jwt.sign({ id }, process.env.JWT_SECRET || 'metal_detector_secret_key_123', {
         expiresIn: '30d'
     });
 };
