@@ -62,7 +62,7 @@ const DashboardLayout = ({ children }) => {
                     <div className="h-16 flex items-center px-6 border-b border-gray-100">
                         <Link to="/" className="flex items-center space-x-2">
                             <Leaf className="h-8 w-8 text-green-600" />
-                            <span className="text-xl font-bold text-gray-800">CaneGuard</span>
+                            <span className="text-xl font-bold text-gray-800">CaneShield</span>
                         </Link>
                     </div>
 

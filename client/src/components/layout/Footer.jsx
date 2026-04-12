@@ -11,7 +11,7 @@ const Footer = () => {
                     <div>
                         <div className="flex items-center space-x-2 mb-6">
                             <Leaf className="h-8 w-8 text-green-500" />
-                            <span className="text-xl font-bold">CaneGuard</span>
+                            <span className="text-xl font-bold">CaneShield</span>
                         </div>
                         <p className="text-gray-400 text-sm leading-relaxed">
                             Protecting your machinery with advanced metal detection technology.
@@ -36,7 +36,7 @@ const Footer = () => {
                         <ul className="space-y-4">
                             <li className="flex items-start space-x-3 text-gray-400">
                                 <Mail className="h-5 w-5 text-green-500 mt-1" />
-                                <span>contact@caneguard.com</span>
+                                <span>contact@caneshield.com</span>
                             </li>
                             <li className="flex items-start space-x-3 text-gray-400">
                                 <Phone className="h-5 w-5 text-green-500 mt-1" />
@@ -69,7 +69,7 @@ const Footer = () => {
 
                 <div className="border-t border-gray-800 pt-8 text-center">
                     <p className="text-gray-500 text-sm">
-                        &copy; {new Date().getFullYear()} CaneGuard. All rights reserved.
+                        &copy; {new Date().getFullYear()} CaneShield. All rights reserved.
                     </p>
                 </div>
             </div>

@@ -62,7 +62,7 @@ const Login = () => {
                         <div className="lg:hidden flex justify-center mb-6">
                             <Link to="/" className="inline-flex items-center space-x-2 text-green-600">
                                 <Leaf className="h-8 w-8" />
-                                <span className="text-xl font-bold">CaneGuard</span>
+                                <span className="text-xl font-bold">CaneShield</span>
                             </Link>
                         </div>
                         <h2 className="text-3xl font-bold text-gray-900">Welcome Back</h2>

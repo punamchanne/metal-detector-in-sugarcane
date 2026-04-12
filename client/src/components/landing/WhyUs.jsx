@@ -23,7 +23,7 @@ const WhyUs = () => {
                             Pioneering Safety in <br /> Sugarcane Processing
                         </h2>
                         <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                            At CaneGuard, our mission is to revolutionize agriculture safety through smart technology.
+                            At CaneShield, our mission is to revolutionize agriculture safety through smart technology.
                             We combine robust sensors with intelligent software to protect your capital investments and
                             streamline the sugarcane crushing process.
                         </p>

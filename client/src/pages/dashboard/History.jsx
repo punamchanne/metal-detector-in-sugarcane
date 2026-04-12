@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import detectionService from '../../services/detectionService';
-import { Download, Filter } from 'lucide-react';
+import { Download, Filter, FileDown } from 'lucide-react';
+import { generatePDF } from '../../utils/pdfGenerator';
 
 const DetectionHistory = () => {
     const [detections, setDetections] = useState([]);
@@ -21,6 +22,18 @@ const DetectionHistory = () => {
         fetchDetections();
     }, []);
 
+    const downloadPDF = () => {
+        const headers = ['Date & Time', 'Operation Mode', 'AI Result', 'Confidence', 'Status'];
+        const data = detections.map(d => [
+            new Date(d.createdAt).toLocaleString(),
+            d.mode.replace('_', ' ').toUpperCase(),
+            d.result,
+            `${(d.confidence * 100).toFixed(1)}%`,
+            d.alertTriggered ? 'ALERT' : 'SAFE'
+        ]);
+        generatePDF('Detection History Report', headers, data, 'Detection_History');
+    };
+
     const getStatusColor = (isAlert) => {
         return isAlert ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800';
     };
@@ -34,12 +47,20 @@ const DetectionHistory = () => {
                         <Filter className="h-4 w-4" />
                         <span>Filter</span>
                     </button>
-                    <button className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                    <button 
+                        onClick={downloadPDF}
+                        className="flex items-center space-x-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                    >
+                        <FileDown className="h-4 w-4" />
+                        <span>Download PDF</span>
+                    </button>
+                    <button className="flex items-center space-x-2 px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50">
                         <Download className="h-4 w-4" />
-                        <span>Export CSV</span>
+                        <span>CSV</span>
                     </button>
                 </div>
             </div>
+
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="overflow-x-auto">

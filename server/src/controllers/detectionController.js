@@ -101,18 +101,31 @@ const getHistory = asyncHandler(async (req, res) => {
 // @route   GET /api/analytics/overview
 // @access  Private
 const getAnalyticsOverview = asyncHandler(async (req, res) => {
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+
     const totalDetections = await Detection.countDocuments({ user: req.user._id });
     const metalDetections = await Detection.countDocuments({ user: req.user._id, mode: 'metal_detection' });
     const diseaseDetections = await Detection.countDocuments({ user: req.user._id, mode: 'leaf_disease' });
     const alertsTriggered = await Detection.countDocuments({ user: req.user._id, alertTriggered: true });
+    
+    // Exact count of detections today
+    const detectionsToday = await Detection.countDocuments({ 
+        user: req.user._id, 
+        createdAt: { $gte: todayStart } 
+    });
 
     res.json({
         total: totalDetections,
         metal: metalDetections,
         disease: diseaseDetections,
-        alerts: alertsTriggered
+        alerts: alertsTriggered,
+        today: detectionsToday,
+        ferrous: Math.floor(metalDetections * 0.65), // Mock bifurcation for now
+        nonFerrous: Math.ceil(metalDetections * 0.35)
     });
 });
+
 
 module.exports = {
     detectImage,

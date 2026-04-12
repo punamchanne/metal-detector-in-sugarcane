@@ -33,7 +33,7 @@ const Navbar = () => {
                         <div className="bg-green-600 p-1.5 rounded-lg group-hover:bg-green-700 transition-colors">
                             <Leaf className="h-6 w-6 text-white" />
                         </div>
-                        <span className="text-xl font-bold text-gray-900">CaneGuard</span>
+                        <span className="text-xl font-bold text-gray-900">CaneShield</span>
                     </Link>
 
                     {/* Desktop Menu */}
