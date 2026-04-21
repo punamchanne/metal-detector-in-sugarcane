@@ -12,13 +12,13 @@ const WhyUs = () => {
     ];
 
     return (
-        <section id="about" className="py-24 bg-green-50">
+        <section id="why-us" className="py-24 bg-green-50 scroll-mt-28">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
                     {/* About Text */}
                     <div>
-                        <span className="text-green-600 font-bold tracking-wide uppercase">About Us</span>
+                        <span className="text-green-600 font-bold tracking-wide uppercase">Why Us</span>
                         <h2 className="text-4xl font-bold text-gray-900 mt-2 mb-6">
                             Pioneering Safety in <br /> Sugarcane Processing
                         </h2>

@@ -30,7 +30,7 @@ const steps = [
 
 const HowItWorks = () => {
     return (
-        <section id="how-it-works" className="py-24 bg-gradient-to-br from-green-900 to-gray-900 text-white">
+        <section id="how-it-works" className="py-24 bg-gradient-to-br from-green-900 to-gray-900 text-white scroll-mt-28">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-16">
                     <span className="text-green-400 font-semibold tracking-wider uppercase text-sm">Process Flow</span>

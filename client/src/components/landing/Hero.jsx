@@ -28,13 +28,13 @@ const Hero = () => {
                         <span>Start Free Trial</span>
                         <ArrowRight className="h-5 w-5" />
                     </Link>
-                    <Link
-                        to="/#how-it-works"
+                    <a
+                        href="#demo"
                         className="w-full sm:w-auto flex items-center justify-center space-x-2 px-8 py-4 rounded-full font-bold text-lg text-gray-700 bg-white border border-gray-200 hover:border-green-500 hover:text-green-600 transition-all hover:-translate-y-1 shadow-sm hover:shadow-md"
                     >
                         <PlayCircle className="h-5 w-5" />
                         <span>Watch Demo</span>
-                    </Link>
+                    </a>
                 </div>
             </div>
 

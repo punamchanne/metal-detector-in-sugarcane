@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Upload, Play, Camera, Settings, Layers, Leaf, AlertTriangle, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import detectionService from '../../services/detectionService';
+import { getNotificationPreferences } from '../../utils/notificationPreferences';
 
 const AIInspection = () => {
     const [selectedMode, setSelectedMode] = useState('metal_detection'); // 'metal_detection' or 'leaf_disease'
@@ -9,6 +10,48 @@ const AIInspection = () => {
     const [fileObject, setFileObject] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [result, setResult] = useState(null);
+    const audioContextRef = useRef(null);
+
+    const playMetalAlertSound = async () => {
+        try {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContextClass) return;
+
+            if (!audioContextRef.current) {
+                audioContextRef.current = new AudioContextClass();
+            }
+
+            const context = audioContextRef.current;
+            if (context.state === 'suspended') {
+                await context.resume();
+            }
+
+            const now = context.currentTime;
+            const pulse = (delay, frequency, duration = 0.18) => {
+                const oscillator = context.createOscillator();
+                const gainNode = context.createGain();
+
+                oscillator.type = 'square';
+                oscillator.frequency.setValueAtTime(frequency, now + delay);
+
+                gainNode.gain.setValueAtTime(0.0001, now + delay);
+                gainNode.gain.exponentialRampToValueAtTime(0.18, now + delay + 0.01);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, now + delay + duration);
+
+                oscillator.connect(gainNode);
+                gainNode.connect(context.destination);
+
+                oscillator.start(now + delay);
+                oscillator.stop(now + delay + duration + 0.02);
+            };
+
+            pulse(0, 980);
+            pulse(0.22, 980);
+            pulse(0.44, 650, 0.3);
+        } catch (error) {
+            console.error('Could not play metal alert sound:', error);
+        }
+    };
 
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
@@ -42,6 +85,16 @@ const AIInspection = () => {
 
             if (data.alertTriggered) {
                 toast.error(`ALERT: ${data.result} detected!`, { duration: 5000 });
+
+                const metalDetected =
+                    selectedMode === 'metal_detection'
+                    || (data.result && data.result.toLowerCase().includes('metal'));
+
+                const preferences = getNotificationPreferences();
+
+                if (metalDetected && preferences.metalSound) {
+                    playMetalAlertSound();
+                }
             } else {
                 toast.success('Scan complete: ' + data.result);
             }
