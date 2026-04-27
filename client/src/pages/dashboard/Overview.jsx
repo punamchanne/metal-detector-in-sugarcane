@@ -20,20 +20,11 @@ const Overview = () => {
     const [stats, setStats] = useState({
         total: 0,
         ferrous: 0,
-        nonFerrous: 0,
-        today: 0
+        alerts: 0,
+        today: 0,
+        safeScans: 0,
+        weeklyTrend: []
     });
-
-    // Mock data for charts (since backend doesn't provide time-series yet)
-    const chartData = [
-        { name: 'Mon', detections: 4 },
-        { name: 'Tue', detections: 7 },
-        { name: 'Wed', detections: 2 },
-        { name: 'Thu', detections: 9 },
-        { name: 'Fri', detections: 5 },
-        { name: 'Sat', detections: 3 },
-        { name: 'Sun', detections: 0 },
-    ];
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -71,10 +62,10 @@ const Overview = () => {
                 />
                 <StatCard
                     title="Critical Alerts"
-                    value={stats.today}
+                    value={stats.alerts}
                     icon={AlertOctagon}
                     color="bg-red-600"
-                    subtext="Detected today"
+                    subtext="Total alerts triggered"
                 />
                 <StatCard
                     title="Ferrous Metals"
@@ -85,7 +76,7 @@ const Overview = () => {
                 />
                 <StatCard
                     title="Safe Scans"
-                    value={stats.total * 15 + 120} // Mock calculation for "Safe"
+                    value={stats.safeScans}
                     icon={CheckCircle}
                     color="bg-green-600"
                     subtext="Clean sugarcane processed"
@@ -102,7 +93,7 @@ const Overview = () => {
                     </h3>
                     <div className="h-72 w-full">
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={chartData}>
+                            <BarChart data={stats.weeklyTrend.length > 0 ? stats.weeklyTrend : []}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                 <XAxis dataKey="name" axisLine={false} tickLine={false} />
                                 <YAxis axisLine={false} tickLine={false} />
