@@ -66,7 +66,7 @@ A comprehensive IoT-enabled web application for real-time metal detection in sug
 4.  **Environment Setup**:
     Create a `.env` file in the `server` directory:
     ```env
-    PORT=5000
+    PORT=5001
     MONGO_URI=your_mongodb_connection_string
     JWT_SECRET=your_jwt_secret_key
     NODE_ENV=development
@@ -79,7 +79,7 @@ A comprehensive IoT-enabled web application for real-time metal detection in sug
     cd server
     npm run dev
     ```
-    Server will run on `http://localhost:5000`.
+    Server will run on `http://localhost:5001`.
 
 2.  **Start Frontend**:
     ```bash

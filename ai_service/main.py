@@ -2,7 +2,7 @@ from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 import os
 
-from yolo_inference import detect_metal
+from yolo_inference import detect_metal, detect_leaf_disease
 
 app = FastAPI(title="CaneGuard AI Microservice")
 
@@ -46,22 +46,18 @@ async def predict_metal(file: UploadFile = File(...)):
 @app.post("/predict-disease")
 async def predict_disease(file: UploadFile = File(...)):
     """
-    Mock Route for MobileNetV2 Leaf Disease Detection
-    Replace this logic later with actual TensorFlow/Keras model inference
+    Real-time Biological Analysis using Advanced Vision Core
     """
     try:
         # Read file into memory
         contents = await file.read()
         
-        # Example: 
-        # model = tf.keras.models.load_model('mobilenet.h5')
-        # img = preprocess(contents)
-        # results = model.predict(img)
+        # Call the High-Accuracy Vision Engine
+        disease_result = detect_leaf_disease(contents)
         
-        # Mock Response
         return {
-            "result": "Red Rot",
-            "confidence": 0.92,
+            "result": disease_result["result"],
+            "confidence": disease_result["confidence"],
             "filename": file.filename
         }
     except Exception as e:

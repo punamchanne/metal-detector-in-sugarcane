@@ -6,3 +6,5 @@ numpy
 torch
 Pillow
 python-multipart
+google-generativeai
+python-dotenv
