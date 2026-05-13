@@ -1,121 +1,73 @@
-# Metal Detector in Sugarcane - MERN Stack Project
+# CaneGuard AI - Metal Detection & Disease Analysis in Sugarcane
 
-A comprehensive IoT-enabled web application for real-time metal detection in sugarcane processing.
+A high-accuracy, AI-powered monitoring system designed for the sugarcane industry. Using a hybrid approach of **YOLOv8** and **Google Gemini Vision AI**, CaneGuard detects metallic contaminants and biological diseases in real-time.
 
-## 🚀 Features
+## 🚀 Key Features
 
-- **Real-time Monitoring**: Dashboard with live charts and system health status.
-- **Alert System**: Instant notifications for ferrous/non-ferrous metal detection.
-- **Secure Authentication**: JWT-based login/register with secure password hashing.
-- **Responsive Design**: Mobile-friendly landing page and dashboard.
-- **Reporting**: Automated PDF report generation (mockup) and historical data logs.
+- **Hybrid AI Inspection**: Combines local YOLOv8 inference with high-accuracy Gemini Vision API.
+- **Metal Detection**: Identifies nails, wires, scrap metal, and industrial waste camouflaged in sugarcane.
+- **Biological Analysis**: Detects sugarcane diseases like **Red Rot**, **Rust**, and **Yellow Leaf Virus**.
+- **Real-time Dashboard**: Live monitoring of hardware status, detection history, and analytics.
+- **Instant Alerts**: Sound and visual alerts triggered automatically upon positive detection.
+- **Secure MERN Architecture**: Robust authentication and data persistence using MongoDB.
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React, Vite, Tailwind CSS, Recharts, Lucide Icons.
-- **Backend**: Node.js, Express.js, MongoDB, Mongoose.
-- **Authentication**: JSON Web Token (JWT), BCrypt.js.
+- **Frontend**: React.js, Vite, Tailwind CSS, Lucide Icons, Recharts.
+- **Backend**: Node.js, Express.js, MongoDB (Mongoose).
+- **AI Microservice**: Python, FastAPI, YOLOv8 (Ultralytics), Google Generative AI (Gemini Flash).
+- **Security**: JWT Authentication, BCrypt Hashing, CORS Protection.
 
 ## 📂 Project Structure
 
 ```
 /
-├── client/                 # React Frontend
-│   ├── src/
-│   │   ├── components/     # Reusable UI components
-│   │   ├── pages/          # Application pages (Landing, Dashboard, Auth)
-│   │   ├── services/       # API integration
-│   │   └── ...
-├── server/                 # Node.js Backend
-│   ├── src/
-│   │   ├── config/         # DB connection
-│   │   ├── controllers/    # Route logic
-│   │   ├── models/         # Mongoose schemas
-│   │   ├── routes/         # API endpoints
-│   │   └── ...
+├── client/                 # React Frontend (Vite)
+├── server/                 # Node.js Backend (Express)
+├── ai_service/             # Python AI Microservice (FastAPI + YOLO + Gemini)
+├── yolov8n.pt              # Local YOLO Model Weights
 └── README.md
 ```
 
-## ⚡ Getting Started
+## ⚡ Setup & Installation
 
 ### Prerequisites
+- Node.js (v16+)
+- MongoDB (Atlas or Local)
+- Python (3.9+)
+- Google Gemini API Key ([Get it here](https://aistudio.google.com/))
 
-- Node.js (v14+)
-- MongoDB Atlas Account (or local MongoDB)
+### 1. Backend (Node.js)
+```bash
+cd server
+npm install
+# Create .env with: PORT=5001, MONGO_URI, JWT_SECRET
+npm run dev
+```
 
-### Installation
+### 2. Frontend (React)
+```bash
+cd client
+npm install
+npm run dev
+```
 
-1.  **Clone the repository**:
-    ```bash
-    git clone <repository-url>
-    cd meta-detector-sugarcane
-    ```
+### 3. AI Service (Python)
+```bash
+cd ai_service
+pip install -r requirements.txt
+# Create .env with: VISION_MODEL_CONFIG_KEY=your_gemini_key
+python -m uvicorn main:app --reload
+```
 
-2.  **Install Server Dependencies**:
-    ```bash
-    cd server
-    npm install
-    ```
-
-3.  **Install Client Dependencies**:
-    ```bash
-    cd ../client
-    npm install
-    ```
-
-4.  **Environment Setup**:
-    Create a `.env` file in the `server` directory:
-    ```env
-    PORT=5001
-    MONGO_URI=your_mongodb_connection_string
-    JWT_SECRET=your_jwt_secret_key
-    NODE_ENV=development
-    ```
-
-### Running Locally
-
-1.  **Start Backend**:
-    ```bash
-    cd server
-    npm run dev
-    ```
-    Server will run on `http://localhost:5001`.
-
-2.  **Start Frontend**:
-    ```bash
-    cd client
-    npm run dev
-    ```
-    Client will run on `http://localhost:5173`.
-
-3.  **Start AI Microservice (Python FastAPI)**:
-    *(Ensure you have Python installed)*
-    ```bash
-    cd ai_service
-    pip install -r requirements.txt
-    uvicorn main:app --reload
-    ```
-
-    The FastAPI service should run on `http://127.0.0.1:8000`.
-
-## 🌐 Deployment
-
-### Frontend (Vercel)
-1.  Push code to GitHub.
-2.  Import the `client` folder into Vercel.
-3.  Add environment variables if needed.
-4.  Deploy!
-
-### Backend (Render/Railway)
-1.  Push code to GitHub.
-2.  Import the `server` folder into Render/Railway.
-3.  Add environment variables (`MONGO_URI`, `JWT_SECRET`).
-4.  Deploy!
-
-## 🔒 Security Note
-- Passwords are hashed using BCrypt.
-- API endpoints are protected with JWT Middleware.
-- CORS is configured to allow frontend communication.
+## 🧠 AI Logic (How it works)
+The system uses a **Discovery Phase** to find the best available Gemini model (1.5-Flash or Pro) for your API key. 
+1. **Local Pass**: YOLOv8 checks for objects in the frame.
+2. **AI Validation**: Gemini Vision AI performs a "Critical Inspection" to verify if the object is metal or if the leaf shows disease symptoms.
+3. **Classification**: Results are sent to the Node.js server to trigger alerts and save history.
 
 ## 🤝 Contributing
-Contributions are welcome! Please fork the repository and submit a pull request.
+Feel free to fork this project and submit PRs. For major changes, please open an issue first.
+
+## 📄 License
+MIT License - Created for Sugarcane Industry Automation.
